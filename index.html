@@ -1,0 +1,1835 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>家庭保單管理與理賠試算中心｜線上互動查詢系統</title>
+  <style>
+    :root {
+      --primary: #1e4e79;
+      --primary-light: #2b6cb0;
+      --primary-bg: #ebf4ff;
+      --accent: #0d9488;
+      --accent-light: #ccfbf1;
+      --warning: #d97706;
+      --warning-bg: #fef3c7;
+      --danger: #dc2626;
+      --danger-bg: #fee2e2;
+      --success: #16a34a;
+      --success-bg: #dcfce7;
+      --purple: #7c3aed;
+      --purple-bg: #f3e8ff;
+      --bg: #f4f7fb;
+      --card: #ffffff;
+      --text: #1e293b;
+      --text-muted: #64748b;
+      --border: #e2e8f0;
+      --shadow: 0 4px 16px rgba(15, 23, 42, 0.06);
+      --radius: 14px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: "Microsoft JhengHei", "PingFang TC", "Noto Sans TC", sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      padding-bottom: 60px;
+    }
+
+    /* Header */
+    .header {
+      background: linear-gradient(135deg, #163a5f 0%, #1e4e79 55%, #0f766e 100%);
+      color: #fff;
+      padding: 28px 24px 34px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.12);
+    }
+
+    .container {
+      max-width: 1240px;
+      margin: 0 auto;
+    }
+
+    .header-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+
+    .header-title h1 {
+      font-size: 1.75rem;
+      font-weight: 800;
+      letter-spacing: 0.5px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .header-title p {
+      font-size: 0.95rem;
+      color: rgba(255, 255, 255, 0.85);
+      margin-top: 6px;
+    }
+
+    .header-actions {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .btn-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 9px 15px;
+      border-radius: 10px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      text-decoration: none;
+      transition: all 0.2s;
+      cursor: pointer;
+      border: none;
+    }
+
+    .btn-white {
+      background: rgba(255, 255, 255, 0.95);
+      color: var(--primary);
+    }
+
+    .btn-white:hover {
+      background: #fff;
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    }
+
+    .btn-glass {
+      background: rgba(255, 255, 255, 0.16);
+      color: #fff;
+      border: 1px solid rgba(255, 255, 255, 0.3);
+    }
+
+    .btn-glass:hover {
+      background: rgba(255, 255, 255, 0.26);
+    }
+
+    /* KPI Row */
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 14px;
+      margin-top: 22px;
+    }
+
+    .kpi-card {
+      background: rgba(255, 255, 255, 0.13);
+      backdrop-filter: blur(8px);
+      border: 1px solid rgba(255, 255, 255, 0.22);
+      border-radius: 12px;
+      padding: 14px 18px;
+    }
+
+    .kpi-label {
+      font-size: 0.85rem;
+      color: rgba(255, 255, 255, 0.82);
+    }
+
+    .kpi-value {
+      font-size: 1.55rem;
+      font-weight: 800;
+      margin-top: 2px;
+    }
+
+    .kpi-sub {
+      font-size: 0.8rem;
+      color: rgba(255, 255, 255, 0.78);
+      margin-top: 2px;
+    }
+
+    /* Navigation Tabs */
+    .nav-wrap {
+      background: #fff;
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.04);
+    }
+
+    .nav-tabs {
+      display: flex;
+      gap: 6px;
+      overflow-x: auto;
+      padding: 10px 16px;
+      max-width: 1240px;
+      margin: 0 auto;
+    }
+
+    .tab-btn {
+      padding: 10px 18px;
+      border: none;
+      background: transparent;
+      color: var(--text-muted);
+      font-size: 0.98rem;
+      font-weight: 700;
+      border-radius: 10px;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .tab-btn:hover {
+      background: var(--bg);
+      color: var(--primary);
+    }
+
+    .tab-btn.active {
+      background: var(--primary);
+      color: #fff;
+      box-shadow: 0 3px 10px rgba(30, 78, 121, 0.25);
+    }
+
+    /* Main Content */
+    .main-content {
+      max-width: 1240px;
+      margin: 24px auto 0;
+      padding: 0 16px;
+    }
+
+    .tab-panel {
+      display: none;
+    }
+
+    .tab-panel.active {
+      display: block;
+      animation: fadeIn 0.25s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(4px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Member Selector Cards */
+    .member-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 14px;
+      margin-bottom: 22px;
+    }
+
+    .member-card {
+      background: var(--card);
+      border: 2px solid var(--border);
+      border-radius: var(--radius);
+      padding: 16px 18px;
+      cursor: pointer;
+      transition: all 0.2s;
+      position: relative;
+      box-shadow: var(--shadow);
+    }
+
+    .member-card:hover {
+      border-color: #93c5fd;
+      transform: translateY(-2px);
+    }
+
+    .member-card.active {
+      border-color: var(--primary);
+      background: linear-gradient(180deg, #f0f7ff 0%, #ffffff 100%);
+      box-shadow: 0 6px 18px rgba(30, 78, 121, 0.14);
+    }
+
+    .member-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .member-avatar {
+      width: 46px;
+      height: 46px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      background: var(--primary-bg);
+    }
+
+    .member-info h3 {
+      font-size: 1.1rem;
+      font-weight: 800;
+      color: var(--text);
+    }
+
+    .member-info span {
+      font-size: 0.82rem;
+      color: var(--text-muted);
+    }
+
+    .member-stats {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 12px;
+      padding-top: 10px;
+      border-top: 1px dashed var(--border);
+      font-size: 0.85rem;
+    }
+
+    /* Summary Pillars */
+    .pillar-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 14px;
+      margin-bottom: 22px;
+    }
+
+    .pillar-card {
+      background: var(--card);
+      border-radius: var(--radius);
+      padding: 16px 18px;
+      border-left: 5px solid var(--primary);
+      box-shadow: var(--shadow);
+    }
+
+    .pillar-card.medical { border-left-color: #0284c7; }
+    .pillar-card.cancer { border-left-color: #e11d48; }
+    .pillar-card.disability { border-left-color: #7c3aed; }
+    .pillar-card.accident { border-left-color: #d97706; }
+
+    .pillar-title {
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: var(--text-muted);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .pillar-main {
+      font-size: 1.2rem;
+      font-weight: 800;
+      color: var(--text);
+      margin: 6px 0 4px;
+    }
+
+    .pillar-desc {
+      font-size: 0.84rem;
+      color: var(--text-muted);
+    }
+
+    /* Filter Bar */
+    .filter-bar {
+      background: var(--card);
+      padding: 14px 18px;
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      margin-bottom: 18px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .cat-pills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .cat-pill {
+      padding: 6px 13px;
+      border-radius: 20px;
+      font-size: 0.86rem;
+      font-weight: 600;
+      border: 1px solid var(--border);
+      background: #f8fafc;
+      color: var(--text-muted);
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+
+    .cat-pill:hover {
+      border-color: var(--primary-light);
+      color: var(--primary);
+    }
+
+    .cat-pill.active {
+      background: var(--primary);
+      color: #fff;
+      border-color: var(--primary);
+    }
+
+    .search-input {
+      padding: 8px 14px;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      font-size: 0.9rem;
+      min-width: 240px;
+      outline: none;
+    }
+
+    .search-input:focus {
+      border-color: var(--primary-light);
+      box-shadow: 0 0 0 3px rgba(43, 108, 176, 0.12);
+    }
+
+    /* Coverage Cards */
+    .coverage-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+      gap: 16px;
+    }
+
+    .cov-card {
+      background: var(--card);
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+      padding: 18px;
+      box-shadow: var(--shadow);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      transition: transform 0.15s;
+    }
+
+    .cov-card:hover {
+      transform: translateY(-2px);
+    }
+
+    .cov-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 8px;
+      margin-bottom: 8px;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 3px 9px;
+      border-radius: 6px;
+      font-size: 0.76rem;
+      font-weight: 700;
+    }
+
+    .badge-blue { background: var(--primary-bg); color: var(--primary); }
+    .badge-green { background: var(--success-bg); color: var(--success); }
+    .badge-amber { background: var(--warning-bg); color: var(--warning); }
+    .badge-red { background: var(--danger-bg); color: var(--danger); }
+    .badge-purple { background: var(--purple-bg); color: var(--purple); }
+    .badge-teal { background: var(--accent-light); color: var(--accent); }
+
+    .cov-title {
+      font-size: 1.05rem;
+      font-weight: 800;
+      color: var(--text);
+      margin-bottom: 4px;
+    }
+
+    .cov-policy {
+      font-size: 0.83rem;
+      color: var(--text-muted);
+      margin-bottom: 10px;
+    }
+
+    .cov-amount-box {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 10px;
+      padding: 10px 14px;
+      margin-bottom: 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .cov-amount-label {
+      font-size: 0.82rem;
+      color: var(--text-muted);
+    }
+
+    .cov-amount-val {
+      font-size: 1.22rem;
+      font-weight: 800;
+      color: var(--primary);
+    }
+
+    .cov-details {
+      font-size: 0.87rem;
+      color: var(--text);
+      margin-bottom: 12px;
+    }
+
+    .cov-details p {
+      margin-bottom: 6px;
+    }
+
+    .cov-warn {
+      background: #fffbeb;
+      border-left: 3px solid #f59e0b;
+      padding: 7px 10px;
+      border-radius: 6px;
+      font-size: 0.82rem;
+      color: #92400e;
+      margin-top: 6px;
+    }
+
+    .cov-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-top: 10px;
+      border-top: 1px solid var(--border);
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+
+    .pdf-link {
+      color: var(--primary-light);
+      text-decoration: none;
+      font-weight: 700;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .pdf-link:hover {
+      text-decoration: underline;
+    }
+
+    /* Calculator Layout */
+    .calc-layout {
+      display: grid;
+      grid-template-columns: 410px 1fr;
+      gap: 20px;
+      align-items: start;
+    }
+
+    @media (max-width: 960px) {
+      .calc-layout {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .calc-panel {
+      background: var(--card);
+      border-radius: var(--radius);
+      padding: 22px;
+      box-shadow: var(--shadow);
+      border: 1px solid var(--border);
+    }
+
+    .calc-panel h2 {
+      font-size: 1.18rem;
+      font-weight: 800;
+      color: var(--primary);
+      margin-bottom: 16px;
+      padding-bottom: 10px;
+      border-bottom: 2px solid var(--primary-bg);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .form-group {
+      margin-bottom: 14px;
+    }
+
+    .form-group label {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.9rem;
+      font-weight: 700;
+      margin-bottom: 6px;
+      color: var(--text);
+    }
+
+    .form-control {
+      width: 100%;
+      padding: 9px 12px;
+      border: 1px solid #cbd5e1;
+      border-radius: 9px;
+      font-size: 0.94rem;
+      font-family: inherit;
+      background: #fff;
+    }
+
+    .form-control:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(30, 78, 121, 0.12);
+    }
+
+    .input-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    .preset-bar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 16px;
+    }
+
+    .preset-btn {
+      padding: 6px 11px;
+      background: var(--primary-bg);
+      color: var(--primary);
+      border: 1px solid #bfdbfe;
+      border-radius: 8px;
+      font-size: 0.81rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+
+    .preset-btn:hover {
+      background: var(--primary);
+      color: #fff;
+    }
+
+    /* Result Summary Banner */
+    .result-banner {
+      background: linear-gradient(135deg, #1e4e79 0%, #0f766e 100%);
+      color: #fff;
+      border-radius: 12px;
+      padding: 20px 22px;
+      margin-bottom: 18px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+
+    .result-total-label {
+      font-size: 0.9rem;
+      opacity: 0.9;
+    }
+
+    .result-total-val {
+      font-size: 2.1rem;
+      font-weight: 900;
+      letter-spacing: 0.5px;
+    }
+
+    .result-breakdown {
+      display: flex;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .result-sub-box {
+      background: rgba(255, 255, 255, 0.15);
+      padding: 8px 14px;
+      border-radius: 9px;
+      font-size: 0.85rem;
+    }
+
+    .result-sub-box strong {
+      display: block;
+      font-size: 1.1rem;
+    }
+
+    /* Table Styles */
+    .table-wrap {
+      overflow-x: auto;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.9rem;
+    }
+
+    th {
+      background: #f1f5f9;
+      color: var(--text);
+      font-weight: 800;
+      text-align: left;
+      padding: 11px 12px;
+      border-bottom: 2px solid var(--border);
+      white-space: nowrap;
+    }
+
+    td {
+      padding: 11px 12px;
+      border-bottom: 1px solid var(--border);
+      vertical-align: top;
+    }
+
+    tr:hover td {
+      background: #f8fafc;
+    }
+
+    .amount-cell {
+      font-weight: 800;
+      color: var(--primary);
+      text-align: right;
+      white-space: nowrap;
+    }
+
+    .doc-box {
+      background: #f0fdf4;
+      border: 1px solid #bbf7d0;
+      border-radius: 10px;
+      padding: 14px 18px;
+      margin-top: 18px;
+    }
+
+    .doc-box h4 {
+      color: #166534;
+      margin-bottom: 8px;
+      font-size: 0.95rem;
+    }
+
+    .doc-box ul {
+      padding-left: 20px;
+      font-size: 0.88rem;
+      color: #14532d;
+    }
+
+    /* Calendar Cards */
+    .cal-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+
+    .cal-card {
+      background: var(--card);
+      border-radius: var(--radius);
+      padding: 18px;
+      box-shadow: var(--shadow);
+      border-top: 5px solid var(--primary);
+    }
+
+    .cal-month {
+      font-size: 1.15rem;
+      font-weight: 800;
+      color: var(--primary);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+
+    .progress-bar {
+      width: 100%;
+      height: 8px;
+      background: #e2e8f0;
+      border-radius: 99px;
+      overflow: hidden;
+      margin: 6px 0;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: var(--accent);
+      border-radius: 99px;
+    }
+
+    @media print {
+      .nav-wrap, .header-actions, .preset-bar { display: none !important; }
+      body { background: #fff; }
+      .cov-card, .calc-panel, .cal-card { box-shadow: none; border: 1px solid #ccc; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Header -->
+  <header class="header">
+    <div class="container">
+      <div class="header-top">
+        <div class="header-title">
+          <h1>🛡️ 家庭保單管理與理賠試算中心</h1>
+          <p>條款級結構化資料庫｜支援依成員查詢、雙實支實付＆癌症＆失能互動試算、原始保單 PDF 追溯</p>
+        </div>
+        <div class="header-actions">
+          <a class="btn-link btn-white" href="https://docs.google.com/spreadsheets/d/1xW9NIwQQCXqlIoLtlc1ydCHfWty-qEI66npnCxopv8Q/edit" target="_blank" rel="noopener">
+            📊 開啟 Google 試算表資料庫
+          </a>
+          <a class="btn-link btn-glass" href="https://drive.google.com/drive/folders/15TueKkhT3TUfnwYTfwj0EJFeAGLtONi0" target="_blank" rel="noopener">
+            📁 雲端原始保單 PDF 區
+          </a>
+          <button class="btn-link btn-glass" onclick="window.print()">
+            🖨️ 列印本頁報表
+          </button>
+        </div>
+      </div>
+
+      <div class="kpi-grid">
+        <div class="kpi-card">
+          <div class="kpi-label">👨‍👩‍👦‍👦 家庭成員數</div>
+          <div class="kpi-value">4 人</div>
+          <div class="kpi-sub">媽媽(真)、爸爸(鋐)、大兒子(陽)、小兒子(勛)</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-label">📋 已建檔保單總數</div>
+          <div class="kpi-value">7 張 <span style="font-size:0.9rem;font-weight:500;">(5張有效)</span></div>
+          <div class="kpi-sub">含 5 張有效主約＋5 項附約（2 張歷史解約備查）</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-label">🔍 已核對保障＆條款規則</div>
+          <div class="kpi-value">41 項 / 42 條</div>
+          <div class="kpi-sub">100% 綁定雲端 PDF 條款條次與頁碼</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-label">💰 預估全家年繳總保費</div>
+          <div class="kpi-value">NT$ 87,277</div>
+          <div class="kpi-sub">分布於 5 月、11 月、12 月（主約P004已期滿免繳）</div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Sticky Navigation Tabs -->
+  <nav class="nav-wrap">
+    <div class="nav-tabs">
+      <button class="tab-btn active" onclick="switchTab('tab-members', this)">👨‍👩‍👦‍👦 一、家庭成員保障查詢</button>
+      <button class="tab-btn" onclick="switchTab('tab-calculator', this)">🧮 二、互動式理賠試算器</button>
+      <button class="tab-btn" onclick="switchTab('tab-calendar', this)">📅 三、年度繳費日曆＆保單總覽</button>
+      <button class="tab-btn" onclick="switchTab('tab-analysis', this)">📊 四、家庭保障缺口分析報告</button>
+    </div>
+  </nav>
+
+  <!-- Main Content -->
+  <main class="main-content">
+
+    <!-- TAB 1: 成員保障查詢 -->
+    <section id="tab-members" class="tab-panel active">
+      <!-- Member Cards -->
+      <div class="member-grid" id="memberSelector"></div>
+
+      <!-- Member 4 Pillars Summary -->
+      <div class="pillar-grid" id="memberPillars"></div>
+
+      <!-- Filter Bar -->
+      <div class="filter-bar">
+        <div class="cat-pills" id="categoryPills"></div>
+        <input type="text" id="covSearch" class="search-input" placeholder="🔍 輸入關鍵字（如：實支實付、手術、原位癌、慰問金、豁免）..." oninput="renderCoverages()" />
+      </div>
+
+      <!-- Coverage Cards Grid -->
+      <div class="coverage-list" id="coverageContainer"></div>
+    </section>
+
+    <!-- TAB 2: 互動式理賠試算器 -->
+    <section id="tab-calculator" class="tab-panel">
+      <div class="calc-layout">
+        <!-- Left Input Panel -->
+        <div class="calc-panel">
+          <h2>⚙️ 理賠情境設定</h2>
+
+          <div class="form-group">
+            <label>⚡ 快速帶入模擬情境（一鍵測試）：</label>
+            <div class="preset-bar">
+              <button class="preset-btn" onclick="applyPreset('zhen_surgery')">👩 媽媽：疾病住院5天＋微創手術自費8萬</button>
+              <button class="preset-btn" onclick="applyPreset('zhen_cancer')">👩 媽媽：確診癌症＋住院5天＋手術1次＋門診放療3次</button>
+              <button class="preset-btn" onclick="applyPreset('yang_cis')">👦 大兒子：確診原位癌＋住院5天＋手術1次＋放療3次</button>
+              <button class="preset-btn" onclick="applyPreset('yang_cancer')">👦 大兒子：確診一般惡性腫瘤＋住院10天＋化放療6次</button>
+              <button class="preset-btn" onclick="applyPreset('hong_disability')">👨 爸爸：疾病或意外致成第3級失能</button>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="calcMember">1. 選擇被保險人</label>
+            <select id="calcMember" class="form-control" onchange="runCalculator()">
+              <option value="M001">M001｜楊佩真 / 媽媽（新光防癌+附約、遠雄RJ1、元大失能150萬）</option>
+              <option value="M002">M002｜王鋕鋐 / 爸爸（元大失能照護終身150萬）</option>
+              <option value="M003">M003｜王叡陽 / 大兒子（幸福/國泰承受 新防癌終身2單位）</option>
+              <option value="M004">M004｜王燡勛 / 小兒子（尚無已建檔保單）</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="calcScenario">2. 事故／診斷類型</label>
+            <select id="calcScenario" class="form-control" onchange="runCalculator()">
+              <option value="general_medical">🏥 一般疾病住院／手術</option>
+              <option value="accident_medical">🚑 意外傷害住院／手術／門診</option>
+              <option value="cancer_cis">🎗️ 原位癌／低侵襲性癌症</option>
+              <option value="cancer_general">🎗️ 一般癌症（其他惡性腫瘤）</option>
+              <option value="disability">♿ 疾病或意外致成失能（1～11級）</option>
+            </select>
+          </div>
+
+          <div class="input-row">
+            <div class="form-group">
+              <label for="calcHospDays">住院天數（日）</label>
+              <input type="number" id="calcHospDays" class="form-control" value="5" min="0" max="365" oninput="runCalculator()" />
+            </div>
+            <div class="form-group">
+              <label for="calcInSurg">住院手術次數（次）</label>
+              <input type="number" id="calcInSurg" class="form-control" value="1" min="0" max="10" oninput="runCalculator()" />
+            </div>
+          </div>
+
+          <div class="input-row">
+            <div class="form-group">
+              <label for="calcOutSurg">門診手術次數（次）</label>
+              <input type="number" id="calcOutSurg" class="form-control" value="0" min="0" max="10" oninput="runCalculator()" />
+            </div>
+            <div class="form-group">
+              <label for="calcIs227">符合健保 2-2-7 手術？</label>
+              <select id="calcIs227" class="form-control" onchange="runCalculator()">
+                <option value="yes">✅ 是（2-2-7 手術篇）</option>
+                <option value="no">⚠️ 否（屬 2-2-6 處置類）</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="input-row">
+            <div class="form-group">
+              <label for="calcMiscExp">住院醫療雜費自費（元）</label>
+              <input type="number" id="calcMiscExp" class="form-control" value="50000" min="0" step="5000" oninput="runCalculator()" />
+            </div>
+            <div class="form-group">
+              <label for="calcSurgExp">手術費自費金額（元）</label>
+              <input type="number" id="calcSurgExp" class="form-control" value="30000" min="0" step="5000" oninput="runCalculator()" />
+            </div>
+          </div>
+
+          <!-- Cancer Specific Inputs -->
+          <div id="cancerInputs" style="background:#fff1f2;padding:12px;border-radius:10px;border:1px solid #fecdd3;margin-bottom:14px;">
+            <div style="font-size:0.85rem;font-weight:800;color:#be123c;margin-bottom:8px;">🎗️ 癌症專屬療程參數</div>
+            <div class="input-row">
+              <div class="form-group">
+                <label for="calcFirstCancer">是否初次確診罹癌</label>
+                <select id="calcFirstCancer" class="form-control" onchange="runCalculator()">
+                  <option value="yes">是（初次確診）</option>
+                  <option value="no">否（既往已領過一次金）</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="calcClinicDays">住院前後30日門診(日)</label>
+                <input type="number" id="calcClinicDays" class="form-control" value="3" min="0" oninput="runCalculator()" />
+              </div>
+            </div>
+            <div class="input-row">
+              <div class="form-group">
+                <label for="calcChemo">化學治療次數（次）</label>
+                <input type="number" id="calcChemo" class="form-control" value="0" min="0" oninput="runCalculator()" />
+              </div>
+              <div class="form-group">
+                <label for="calcRadio">放療/放射刀次數（次）</label>
+                <input type="number" id="calcRadio" class="form-control" value="3" min="0" oninput="runCalculator()" />
+              </div>
+            </div>
+            <div class="input-row">
+              <div class="form-group">
+                <label for="calcBoneMarrow">骨髓移植次數（次）</label>
+                <input type="number" id="calcBoneMarrow" class="form-control" value="0" min="0" oninput="runCalculator()" />
+              </div>
+              <div class="form-group">
+                <label for="calcReconstruct">義乳/義肢重建（次）</label>
+                <input type="number" id="calcReconstruct" class="form-control" value="0" min="0" oninput="runCalculator()" />
+              </div>
+            </div>
+          </div>
+
+          <!-- Disability Specific Inputs -->
+          <div id="disabilityInputs" style="background:#f5f3ff;padding:12px;border-radius:10px;border:1px solid #ddd6fe;">
+            <div style="font-size:0.85rem;font-weight:800;color:#6d28d9;margin-bottom:8px;">♿ 失能等級設定（元大祝扶年年 DE 試算）</div>
+            <div class="form-group" style="margin-bottom:0;">
+              <label for="calcDisLevel">診斷確定失能（殘廢）等級</label>
+              <select id="calcDisLevel" class="form-control" onchange="runCalculator()">
+                <option value="0">未達失能程度（0）</option>
+                <option value="1">第 1 級失能（給付比例 100%｜含1~6級扶助金）</option>
+                <option value="2">第 2 級失能（給付比例 90%｜含1~6級扶助金）</option>
+                <option value="3">第 3 級失能（給付比例 80%｜含1~6級扶助金）</option>
+                <option value="4">第 4 級失能（給付比例 70%｜含1~6級扶助金）</option>
+                <option value="5">第 5 級失能（給付比例 60%｜含1~6級扶助金）</option>
+                <option value="6">第 6 級失能（給付比例 50%｜含1~6級扶助金）</option>
+                <option value="7">第 7 級失能（給付比例 40%｜一次金＋豁免保費）</option>
+                <option value="8">第 8 級失能（給付比例 30%｜一次金＋豁免保費）</option>
+                <option value="9">第 9 級失能（給付比例 20%｜一次金＋豁免保費）</option>
+                <option value="10">第 10 級失能（給付比例 10%｜一次金＋豁免保費）</option>
+                <option value="11">第 11 級失能（給付比例 5%｜一次金＋豁免保費）</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right Output Panel -->
+        <div class="calc-panel">
+          <h2>💰 條件成立下之條款試算結果</h2>
+          <div id="calcResultBanner" class="result-banner"></div>
+
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>保單／保障代碼</th>
+                  <th>給付項目名稱</th>
+                  <th>適用狀態與條款計算過程</th>
+                  <th style="text-align:right;">預估可領金額</th>
+                </tr>
+              </thead>
+              <tbody id="calcResultBody"></tbody>
+            </table>
+          </div>
+
+          <div id="calcDocChecklist" class="doc-box"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 3: 年度繳費日曆與保單總覽 -->
+    <section id="tab-calendar" class="tab-panel">
+      <div class="cal-grid" id="calendarGrid"></div>
+
+      <div class="calc-panel">
+        <h2>📋 家庭保單主檔總覽表（對應試算表 02_保單總覽）</h2>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>代碼</th>
+                <th>被保險人</th>
+                <th>保險公司</th>
+                <th>商品／計畫名稱</th>
+                <th>生效日／期間</th>
+                <th>每年繳費日</th>
+                <th style="text-align:right;">年繳保費</th>
+                <th>狀態</th>
+                <th>原始保單 PDF</th>
+              </tr>
+            </thead>
+            <tbody id="policyTableBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 4: 家庭保障缺口分析 -->
+    <section id="tab-analysis" class="tab-panel">
+      <div class="calc-panel" style="margin-bottom:20px;">
+        <h2>📊 家庭成員五大保障維度總檢視（模式 C 分析報告）</h2>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>家庭成員</th>
+                <th>🏥 住院醫療＆實支實付</th>
+                <th>🎗️ 癌症一次金＆療程</th>
+                <th>♿ 失能／長照扶助</th>
+                <th>🚑 意外傷害＆意外醫療</th>
+                <th>🛡️ 壽險＆重大傷病</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>👩 楊佩真 / 媽媽 (M001)</strong><br><span style="font-size:0.8rem;color:var(--text-muted);">1979年生｜國小教師</span></td>
+                <td><span class="badge badge-green">🟢 極強（雙實支實付）</span><br>• <strong>遠雄 RJ1 計劃二</strong>：日額 1,500/日＋慰問金 7,000/次＋<strong>雜費 30 萬＋手術 20 萬</strong>（副本）<br>• <strong>新光 HS-5＋綜合保障 50 萬</strong>（正本，待補條款頁核對細項）</td>
+                <td><span class="badge badge-amber">🟡 療程強、一次金偏低</span><br>• <strong>新光防癌終身 100 萬</strong>（已繳滿）：初次罹癌（含原位癌）<strong>12 萬</strong>、癌症手術 <strong>12 萬/次</strong>、住院+療養 <strong>6,400/日</strong>、門診 <strong>2,400/次</strong></td>
+                <td><span class="badge badge-green">🟢 充足（終身還本型）</span><br>• <strong>元大 DE 150 萬</strong>：1~11級一次金 <strong>7.5~150 萬</strong>、1~6級復健金 <strong>15 萬</strong>、1~6級扶助金 <strong>每年 18~36 萬（保證15年）</strong></td>
+                <td><span class="badge badge-green">🟢 具備基本保障</span><br>• <strong>新光平安意外 321</strong>：100 萬<br>• <strong>新光意外傷害醫療</strong>：3 萬（實支實付）<br>• <strong>個人綜合保障</strong>：50 萬</td>
+                <td><span class="badge badge-amber">🟡 壽險額度屬搭配主約</span><br>• 遠雄新終身壽險 <strong>10 萬</strong><br>• 元大身故還本（所繳保費 1.06 倍）<br>• 新光癌症身故 <strong>100 萬</strong></td>
+              </tr>
+              <tr>
+                <td><strong>👨 王鋕鋐 / 爸爸 (M002)</strong><br><span style="font-size:0.8rem;color:var(--text-muted);">1975年生｜夫</span></td>
+                <td><span class="badge badge-red">🔴 尚未建檔醫療險</span><br>目前雲端 `鋐` 資料夾僅上傳元大失能險；若爸爸有其他醫療實支實付保單，請上傳至雲端補建檔。</td>
+                <td><span class="badge badge-red">🔴 尚未建檔防癌險</span><br>若有防癌險或重大傷病險保單，請放入雲端 `01_原始保單PDF/鋐` 進行判讀。</td>
+                <td><span class="badge badge-green">🟢 充足（終身還本型）</span><br>• <strong>元大 DE 150 萬</strong>：1~11級一次金 <strong>7.5~150 萬</strong>、1~6級復健金 <strong>15 萬</strong>、1~6級扶助金 <strong>每年 18~36 萬（保證15年）</strong></td>
+                <td><span class="badge badge-red">🔴 尚未建檔意外險</span><br>建議確認是否有壽險／產險意外險或公司團保。</td>
+                <td><span class="badge badge-amber">🟡 身故還本保單</span><br>• 元大身故還本（所繳保費 1.06 倍，20年滿期約 87.1 萬）</td>
+              </tr>
+              <tr>
+                <td><strong>👦 王叡陽 / 大兒子 (M003)</strong><br><span style="font-size:0.8rem;color:var(--text-muted);">2010年生｜長子</span></td>
+                <td><span class="badge badge-red">🔴 尚未建檔一般醫療險</span><br>目前僅建檔防癌險 `P001`；若有一般住院醫療實支實付保單，請放入 `陽` 資料夾。</td>
+                <td><span class="badge badge-green">🟢 終身防癌療程完整</span><br>• <strong>幸福(國泰)新防癌終身 2 單位</strong>：一般癌症一次金 <strong>20 萬</strong>（原位癌 2 萬）、住院+療養 <strong>4,000/日</strong>、住院手術 <strong>4 萬/次</strong>、化放療 <strong>2,000/次</strong></td>
+                <td><span class="badge badge-amber">🟡 僅含完全失能豁免</span><br>致成完全失能或罹患其他癌症可豁免 `P001` 保費。</td>
+                <td><span class="badge badge-red">🔴 尚未建檔意外險</span><br>除學校學生團體保險外，若有商業意外險請補上傳。</td>
+                <td><span class="badge badge-amber">🟡 癌症身故保障</span><br>• 幸福防癌身故 <strong>20 萬</strong></td>
+              </tr>
+              <tr>
+                <td><strong>🧒 王燡勛 / 小兒子 (M004)</strong><br><span style="font-size:0.8rem;color:var(--text-muted);">2013年生｜次子</span></td>
+                <td colspan="5" style="color:var(--text-muted);">📂 目前 Google Drive `01_原始保單PDF/勛` 資料夾尚無保單 PDF 檔案。將保單放入資料夾後並告知「保單整理」，即可自動同步至此網頁與試算表！</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="pillar-grid">
+        <div class="pillar-card medical">
+          <div class="pillar-title">💡 核心優勢 1｜媽媽的雙實支實付</div>
+          <div class="pillar-main">遠雄 RJ1 ＋ 新光 HS-5</div>
+          <div class="pillar-desc">遠雄 `RJ1` 計劃二提供高達 30 萬住院雜費與 20 萬手術費限額（不乘手術比例），且接受「副本收據」，可與新光 `HS-5` 同時申請，加上每次住院固定領 7,000 元慰問金與每日 1,500 元日額，能極大化涵蓋達文西或微創自費醫材。</div>
+        </div>
+        <div class="pillar-card disability">
+          <div class="pillar-title">💡 核心優勢 2｜夫妻雙人終身失能長照</div>
+          <div class="pillar-main">元大 DE 各 150 萬保額</div>
+          <div class="pillar-desc">夫妻皆擁有市場稀缺的「1~11級失能一次金＋1~6級保證給付15年生活扶助金（最高每年36萬、累計最高1,800萬）」，且第 11 級最輕微失能即可豁免後續未到期保費！</div>
+        </div>
+        <div class="pillar-card cancer">
+          <div class="pillar-title">⚠️ 理賠必知眉角｜手術與門診定義</div>
+          <div class="pillar-main">健保 2-2-7 ＆ 住院前後 30 日</div>
+          <div class="pillar-desc">1. 媽媽遠雄 `RJ1` 手術費嚴格限定符合「健保支付標準 2-2-7 手術篇」（若為 2-2-6 處置，門診不賠，但住院期間仍可用 30 萬雜費報銷自費醫材）。<br>2. 大兒子 `P001` 癌症門診金（1,200元/日）限於住院前後 30 日內；但門診化療／放療（2,000元/次）則無 30 日限制！</div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <script>
+    // ==================== 資料庫（同步自 Google 試算表 v1.0） ====================
+    const MEMBERS = [
+      {
+        id: "M001",
+        name: "楊佩真 / 媽媽",
+        role: "配偶（國小教師）",
+        avatar: "👩",
+        birth: "1979-02-11（民國68.02.11）",
+        activePolicies: 3,
+        annualPremium: 42418,
+        pillars: {
+          medical: { main: "雜費 30萬＋手術 20萬＋日額 1,500", desc: "遠雄 RJ1（計劃二，副本）＋ 新光 HS-5（正本）＋ 住院慰問金每次 7,000 元" },
+          cancer: { main: "一次金 12萬｜手術 12萬/次", desc: "新光防癌終身 100 萬（已繳滿）：住院 4,000/日、療養 2,400/日、門診 2,400/次" },
+          disability: { main: "一次金 150萬｜扶助金 36萬/年", desc: "元大祝扶年年 DE：1~6級保證給付 15 年（最高 1,800 萬）＋ 1~11級豁免保費" },
+          accident: { main: "意外死殘 100萬＋醫療 3萬", desc: "新光平安意外 321（100萬）＋ 意外醫療（3萬）＋ 個人綜合保障（50萬）" }
+        }
+      },
+      {
+        id: "M002",
+        name: "王鋕鋐 / 爸爸",
+        role: "本人（夫）",
+        avatar: "👨",
+        birth: "1975-12-23（民國64.12.23）",
+        activePolicies: 1,
+        annualPremium: 39867,
+        pillars: {
+          medical: { main: "尚無已建檔之醫療險", desc: "若爸爸有其他醫療實支實付保單，請放入雲端『鋐』資料夾補建檔" },
+          cancer: { main: "尚無已建檔之防癌險", desc: "若有防癌險或重大傷病險，請放入雲端『鋐』資料夾補建檔" },
+          disability: { main: "一次金 150萬｜扶助金 36萬/年", desc: "元大祝扶年年 DE（150萬）：1~6級復健 15 萬、扶助金每年 18~36 萬（保證15年）" },
+          accident: { main: "身故還本（所繳保費×1.06）", desc: "元大祝扶年年 DE 身故或 111 歲祝壽金退還年繳保費總額 1.06 倍" }
+        }
+      },
+      {
+        id: "M003",
+        name: "王叡陽 / 大兒子",
+        role: "長子（學生）",
+        avatar: "👦",
+        birth: "2010-03-21（民國99.03.21）",
+        activePolicies: 1,
+        annualPremium: 4992,
+        pillars: {
+          medical: { main: "尚無一般疾病醫療險", desc: "目前僅建檔防癌險 P001；若有一般住院實支實付請放入『陽』資料夾" },
+          cancer: { main: "一次金 20萬(原位癌2萬)", desc: "幸福(國泰)新防癌 2 單位：住院+療養 4,000/日、住院手術 4 萬/次、化放療 2,000/次" },
+          disability: { main: "完全失能／罹癌豁免保費", desc: "繳費期間內確診『其他癌症』或致成完全失能免繳未到期保費" },
+          accident: { main: "癌症身故 20 萬元", desc: "幸福(國泰)新防癌終身健康保險（2單位）" }
+        }
+      },
+      {
+        id: "M004",
+        name: "王燡勛 / 小兒子",
+        role: "次子（學生）",
+        avatar: "🧒",
+        birth: "2013-08-16（民國102.08.16）",
+        activePolicies: 0,
+        annualPremium: 0,
+        pillars: {
+          medical: { main: "待上傳保單 PDF", desc: "請將保單放入雲端 01_原始保單PDF/勛" },
+          cancer: { main: "待上傳保單 PDF", desc: "請將保單放入雲端 01_原始保單PDF/勛" },
+          disability: { main: "待上傳保單 PDF", desc: "請將保單放入雲端 01_原始保單PDF/勛" },
+          accident: { main: "待上傳保單 PDF", desc: "請將保單放入雲端 01_原始保單PDF/勛" }
+        }
+      }
+    ];
+
+    const POLICIES = [
+      { id: "P001", memberId: "M003", memberName: "王叡陽/大兒子", insurer: "幸福人壽（現由國泰人壽承受）", name: "新防癌終身健康保險（ICG，2單位）", type: "癌症險", effective: "2011-12-19", term: "20年期（至2031年）／保障終身", dueDay: "每年 12 月 19 日", premium: 4992, status: "有效", maskedNo: "1101****49", pdfUrl: "https://drive.google.com/file/d/1ALiCVYA1wjuLfZ7eFkK1KeBgEclTQiMb/view", progress: 75, progressText: "已繳 15 / 20 年（2031年滿期）" },
+      { id: "P004", memberId: "M001", memberName: "楊佩真/媽媽", insurer: "新光人壽", name: "新光防癌健康終身保險（100萬）＋ 4項移轉附約", type: "癌症險＋醫療／意外附約", effective: "2001-05-25", term: "主約15年已滿期／附約每年續保", dueDay: "每年 05 月 25 日", premium: 6431, status: "有效", maskedNo: "ADBD****80", pdfUrl: "https://drive.google.com/file/d/1G-M108wcQdsYfPjJR9HeBHst-_VXMY-u/view", progress: 100, progressText: "主約已於2016年繳滿！僅繳附約續保費" },
+      { id: "P005", memberId: "M001", memberName: "楊佩真/媽媽", insurer: "元大人壽", name: "元大人壽祝扶年年殘廢照護終身保險（DE，150萬）", type: "失能／長照險", effective: "2016-11-22", term: "20年期（至2036年）／保障終身", dueDay: "每年 11 月 22 日", premium: 26019, status: "有效", maskedNo: "LVAH****18", pdfUrl: "https://drive.google.com/file/d/1CRenO29roKizwxTZ8Fihj1GU3_lBu2D1/view", progress: 50, progressText: "已繳 10 / 20 年（表定26,550，折扣後26,019）" },
+      { id: "P006", memberId: "M002", memberName: "王鋕鋐/爸爸", insurer: "元大人壽", name: "元大人壽祝扶年年殘廢照護終身保險（DE，150萬）", type: "失能／長照險", effective: "2016-11-22", term: "20年期（至2036年）／保障終身", dueDay: "每年 11 月 22 日", premium: 39867, status: "有效", maskedNo: "LVAH****19", pdfUrl: "https://drive.google.com/file/d/1KSYopnT0LBEnCAHcPzxQZ1tusY70BfrJ/view", progress: 50, progressText: "已繳 10 / 20 年（表定41,100，折扣後39,867）" },
+      { id: "P007", memberId: "M001", memberName: "楊佩真/媽媽", insurer: "遠雄人壽", name: "遠雄新終身壽險(104)(FI1-20)＋康富醫療附約(RJ1計劃二)", type: "壽險＋醫療實支實付", effective: "2016-12-15", term: "主約20年(至2036)／RJ1續保至84歲", dueDay: "每年 12 月 15 日", premium: 9968, status: "有效", maskedNo: "1024****0-0", pdfUrl: "https://drive.google.com/file/d/1B2Rcg5qzAFXNpXgf6WbMVctn4yv3m7RP/view", progress: 50, progressText: "主約已繳 10/20 年(2,990元)＋RJ1自然費率(45~49歲6,978元)" },
+      { id: "P002", memberId: "M001", memberName: "楊佩真/媽媽", insurer: "新光人壽", name: "【歷史已解約】新光長安養老終身壽險甲型（10萬）", type: "壽險（已解約）", effective: "2001-05-25", term: "已解約（原附約於2003年移轉至P004）", dueDay: "-", premium: 0, status: "解約", maskedNo: "CPD3****9", pdfUrl: "https://drive.google.com/file/d/1G-M108wcQdsYfPjJR9HeBHst-_VXMY-u/view", progress: 0, progressText: "已解約歷史紀錄" },
+      { id: "P003", memberId: "M001", memberName: "楊佩真/媽媽", insurer: "新光人壽", name: "【歷史已解約】新光千禧寶終身還本壽險（10萬）", type: "壽險（已解約）", effective: "2001-05-25", term: "已解約", dueDay: "-", premium: 0, status: "解約", maskedNo: "YBDB****0", pdfUrl: "https://drive.google.com/file/d/1G-M108wcQdsYfPjJR9HeBHst-_VXMY-u/view", progress: 0, progressText: "已解約歷史紀錄" }
+    ];
+
+    const COVERAGES = [
+      // 媽媽 M001 - 遠雄 P007 (RJ1 + FI1)
+      { id: "C037", ruleId: "R038", policyId: "P007", memberId: "M001", name: "遠雄康富醫療附約(RJ1計劃二)—住院日額保險金", category: "住院日額", amountText: "1,000 元／日", wait: "無等待期", formula: "實際住院日數（含入院及出院當日）× 1,000 元／日（同次最高 365 日）。", warn: "定額給付，無須醫療收據正本；不含日間住院及精神衛生法日間留院。", page: "遠雄保單 p29, p33, p38（RJ1第8條）", status: "已核對", pdfUrl: "https://drive.google.com/file/d/1B2Rcg5qzAFXNpXgf6WbMVctn4yv3m7RP/view" },
+      { id: "C038", ruleId: "R039", policyId: "P007", memberId: "M001", name: "遠雄康富醫療附約(RJ1計劃二)—住院醫療輔助保險金", category: "住院日額", amountText: "500 元／日", wait: "無等待期", formula: "實際住院日數 × 500 元／日（與 C037 住院日額合計每日固定領 1,500 元）。", warn: "定額給付，保證續保至 84 歲。", page: "遠雄保單 p29, p38（RJ1第9條）", status: "已核對", pdfUrl: "https://drive.google.com/file/d/1B2Rcg5qzAFXNpXgf6WbMVctn4yv3m7RP/view" },
+      { id: "C039", ruleId: "R040", policyId: "P007", memberId: "M001", name: "遠雄康富醫療附約(RJ1計劃二)—住院慰問保險金", category: "住院日額", amountText: "7,000 元／次", wait: "無等待期", formula: "只要住院即按日額 7 倍定額給付每次 7,000 元！（住院 1 天連同日額即領 8,500 元）。", warn: "同一次住院限領 1 次；出院後 14 日內因同一疾病或傷害再次住院視為同一次住院。", page: "遠雄保單 p29~30, p38（RJ1第10, 14條）", status: "已核對", pdfUrl: "https://drive.google.com/file/d/1B2Rcg5qzAFXNpXgf6WbMVctn4yv3m7RP/view" },
+      { id: "C040", ruleId: "R041", policyId: "P007", memberId: "M001", name: "遠雄康富醫療附約(RJ1計劃二)—住院醫療費用保險金（雜費實支實付）", category: "住院醫療實支實付", amountText: "限額 300,000 元／次", wait: "無等待期", formula: "以健保身分住院（或急診暫留且收取暫留床費），核付健保不給付之自費醫材、指定用藥、檢查等雜費，每次最高 30 萬元（可接受副本收據）。", warn: "⚠️ 第11條第13款明定：不包括超等住院之病房費差額、管灌飲食以外之膳食費及護理費（病房差額由每日1,500元+每次7,000元慰問金定額補償）。", page: "遠雄保單 p29~30, p33, p38（RJ1第11條）", status: "已核對", pdfUrl: "https://drive.google.com/file/d/1B2Rcg5qzAFXNpXgf6WbMVctn4yv3m7RP/view" },
+      { id: "C041", ruleId: "R042", policyId: "P007", memberId: "M001", name: "遠雄康富醫療附約(RJ1計劃二)—手術費用保險金（住院／門診手術實支）", category: "手術給付", amountText: "限額 200,000 元／次", wait: "無等待期", formula: "以健保身分於『住院或門診』接受手術，核付自費手術費及手術相關醫療費用，每次最高 20 萬元（不乘手術表比例！可接受副本收據）。", warn: "⚠️ 極重要限制（第2條第7款）：手術嚴格限定符合『健保支付標準第二部第二章第七節（2-2-7）』所列舉之手術，不含 2-2-6 處置！", page: "遠雄保單 p28, p30, p33, p38（RJ1第2, 12條）", status: "已核對", pdfUrl: "https://drive.google.com/file/d/1B2Rcg5qzAFXNpXgf6WbMVctn4yv3m7RP/view" },
+      { id: "C036", ruleId: "R037", policyId: "P007", memberId: "M001", name: "遠雄新終身壽險(104)(FI1-20)—身故／全殘廢／祝壽保險金", category: "身故／完全失能", amountText: "100,000 元", wait: "無等待期", formula: "按『保額 10 萬元、表定年繳保費總和、保單價值準備金』三者取大給付。", warn: "🌟 附約延續保護（RJ1第19條）：若主約因全殘廢理賠而終止時，附約 RJ1 仍可繼續續保不終止！", page: "遠雄保單 p19~20, p32（主約第13~15條）", status: "已核對", pdfUrl: "https://drive.google.com/file/d/1B2Rcg5qzAFXNpXgf6WbMVctn4yv3m7RP/view" },
+
+      // 媽媽 M001 - 元大 P005 (DE)
+      { id: "C026", ruleId: "R027", policyId: "P005", memberId: "M001", name: "元大祝扶年年—殘廢保險金（1～11級失能一次金）", category: "失能／長照", amountText: "7.5萬 ～ 150萬元", wait: "無等待期", formula: "因疾病或傷害致成第 1～11 級殘廢程度之一，按 150 萬元 × 給付比例（1級100%～11級5%）一次給付。", warn: "同一保單年度內累計最高以 150 萬元為限。", page: "元大保單 p13~14, p19~27（第14條、附表一）", status: "已核對", pdfUrl: "https://drive.google.com/file/d/1CRenO29roKizwxTZ8Fihj1GU3_lBu2D1/view" },
+      { id: "C027", ruleId: "R028", policyId: "P005", memberId: "M001", name: "元大祝扶年年—復健保險金（1～6級一次金）", category: "失能／長照", amountText: "150,000 元／次", wait: "無等待期", formula: "因疾病或傷害致成第 1～6 級殘廢程度之一且診斷確定日仍生存者，按保額 10% 一次給付 15 萬元。", warn: "不同殘廢項目屬同一手或同一足時僅給付一項。", page: "元大保單 p15（第16條）", status: "已核對", pdfUrl: "https://drive.google.com/file/d/1CRenO29roKizwxTZ8Fihj1GU3_lBu2D1/view" },
+      { id: "C028", ruleId: "R029", policyId: "P005", memberId: "M001", name: "元大祝扶年年—殘廢生活扶助保險金（1～6級保證給付15年）", category: "失能／長照", amountText: "每年 18萬 ～ 36萬元", wait: "無等待期", formula: "致成第 1～6 級殘廢，每年按 36 萬元（保額24%）× 給付比例（1級100%=36萬、2級90%=32.4萬、3級80%=28.8萬、4級70%=25.2萬、5級60%=21.6萬、6級50%=18萬）給付。", warn: "🌟 保證給付 15 年（生前或身故皆可依年利率 2.25% 貼現一次領取）；15 年後仍生存繼續領，最高累計 1,800 萬元！", page: "元大保單 p10, p14（第2, 15條）", status: "已核對", pdfUrl: "https://drive.google.com/file/d/1CRenO29roKizwxTZ8Fihj1GU3_lBu2D1/view" },
+      { id: "C029", ruleId: "R030", policyId: "P005", memberId: "M001", name: "元大祝扶年年—1～11級殘廢豁免保險費", category: "豁免保費", amountText: "豁免年繳 26,019 元", wait: "無等待期", formula: "繳費期間（至2036年）內因疾病或傷害致成第 1～11 級殘廢程度之一，自診斷確定翌日起豁免未到期保費。", warn: "連最輕微的第 11 級殘廢（如單耳聽力或手指缺失等）也觸發豁免！", page: "元大保單 p15（第17條）", status: "已核對", pdfUrl: "https://drive.google.com/file/d/1CRenO29roKizwxTZ8Fihj1GU3_lBu2D1/view" },
+      { id: "C030", ruleId: "R031", policyId: "P005", memberId: "M001", name: "元大祝扶年年—身故保險金或喪葬費用／祝壽保險金（111歲）", category: "身故／完全失能", amountText: "所繳保費總額 × 1.06", wait: "無等待期", formula: "身故或達 111 歲仍生存時，按『年繳保險費總額之 1.06 倍（20年滿期為 562,860 元）』與『保價金』取大者給付。", warn: "不扣除已領過之殘廢保險金！給付後契約終止。", page: "元大保單 p13, p15（第13, 18條）", status: "已核對", pdfUrl: "https://drive.google.com/file/d/1CRenO29roKizwxTZ8Fihj1GU3_lBu2D1/view" },
+
+      // 媽媽 M001 - 新光 P004
+      { id: "C013", ruleId: "R014", policyId: "P004", memberId: "M001", name: "新光防癌健康終身—初次罹患癌症保險金", category: "癌症一次金", amountText: "120,000 元", wait: "30日", formula: "初次確診罹患癌症（含惡性腫瘤 ICD 140-208 及原位癌 ICD 230-234），按保額 100 萬之 12% 給付 12 萬元（終身限 1 次）。", warn: "🌟 條款附表明定『原位癌（分類號碼 230-234）』視同癌症，直接全額給付 12 萬元！", page: "新光防癌三份.pdf p11, p13~17（第2, 3, 10條）", status: "已核對", pdfUrl: "https://drive.google.com/file/d/1G-M108wcQdsYfPjJR9HeBHst-_VXMY-u/view" },
+      { id: "C014", ruleId: "R015", policyId: "P004", memberId: "M001", name: "新光防癌健康終身—癌症住院醫療保險金", category: "癌症療程", amountText: "4,000 元／日", wait: "30日", formula: "以癌症為直接原因或併發症住院治療者，按實際住院日數 × 4,000 元／日（保額千分之4）給付。", warn: "無年度或終身日數上限；可與遠雄 RJ1 住院日額同時領取。", page: "新光防癌三份.pdf p14（第11條）", status: "已核對", pdfUrl: "https://drive.google.com/file/d/1G-M108wcQdsYfPjJR9HeBHst-_VXMY-u/view" },
+      { id: "C015", ruleId: "R016", policyId: "P004", memberId: "M001", name: "新光防癌健康終身—癌症手術醫療保險金", category: "癌症療程", amountText: "120,000 元／次", wait: "30日", formula: "以癌症為直接原因或併發症接受外科手術治療者（含骨髓移植受贈者），每次給付 120,000 元（保額12%）。", warn: "無次數上限！每次因癌症接受外科手術即定額給付 12 萬元。", page: "新光防癌三份.pdf p14（第12條）", status: "已核對", pdfUrl: "https://drive.google.com/file/d/1G-M108wcQdsYfPjJR9HeBHst-_VXMY-u/view" },
+      { id: "C016", ruleId: "R017", policyId: "P004", memberId: "M001", name: "新光防癌健康終身—癌症出院後療養保險金", category: "癌症療程", amountText: "2,400 元／日", wait: "30日", formula: "符合癌症住院並出院後，按住院給付日數 × 2,400 元／日給付（每次住院最高以 20 日／48,000 元為限）。", warn: "住院 20 日內出院者，加計癌症住院金合計每日可領 6,400 元！", page: "新光防癌三份.pdf p14（第13條）", status: "已核對", pdfUrl: "https://drive.google.com/file/d/1G-M108wcQdsYfPjJR9HeBHst-_VXMY-u/view" },
+      { id: "C017", ruleId: "R018", policyId: "P004", memberId: "M001", name: "新光防癌健康終身—癌症門診醫療保險金（含化放療）", category: "癌症療程", amountText: "2,400 元／次", wait: "30日", formula: "以癌症或併發症於醫院接受門診治療（含注射性化療、放射線治療及其他必要癌症門診處理），每次給付 2,400 元。", warn: "不須住院即可申請！同一保單年度內最高以 90 次（216,000 元／年）為限。", page: "新光防癌三份.pdf p14（第14條）", status: "已核對", pdfUrl: "https://drive.google.com/file/d/1G-M108wcQdsYfPjJR9HeBHst-_VXMY-u/view" },
+      { id: "C018", ruleId: "R019", policyId: "P004", memberId: "M001", name: "新光防癌健康終身—癌症身故保險金", category: "身故／完全失能", amountText: "1,000,000 元", wait: "30日", formula: "因癌症或併發症致成死亡者，按保額全額給付 100 萬元，契約終止。", warn: "身故受益人：葉淑惠（母親）。", page: "新光防癌三份.pdf p14（第9條）", status: "已核對", pdfUrl: "https://drive.google.com/file/d/1G-M108wcQdsYfPjJR9HeBHst-_VXMY-u/view" },
+      { id: "C021", ruleId: "R022", policyId: "P004", memberId: "M001", name: "新光安心住院保險附約（71D01，計畫 HS-5）", category: "住院醫療實支實付", amountText: "計畫 HS-5（實支實付）", wait: "待補條款", formula: "2003-04-28 由 P002 移轉至 P004 續保至今（最高續保至 75 歲），提供病房、雜費、手術實支實付。", warn: "📋 狀態：資料不足（僅有批註單，建議補拍安心住院 HS-5 附約條款以確認分項限額）。", page: "新光防癌三份.pdf p2, p18~20", status: "資料不足", pdfUrl: "https://drive.google.com/file/d/1G-M108wcQdsYfPjJR9HeBHst-_VXMY-u/view" },
+      { id: "C023", ruleId: "R024", policyId: "P004", memberId: "M001", name: "新光綜合保障附約（個人保單 P1B01）", category: "手術給付", amountText: "保額 500,000 元", wait: "待補條款", formula: "2003-04-28 移轉至 P004 並提高保額為 50 萬元，涵蓋住院日額、手術醫療、意外死殘。", warn: "📋 狀態：資料不足（建議補拍個人綜合保障附約條款與手術表）。", page: "新光防癌三份.pdf p2, p18~20", status: "資料不足", pdfUrl: "https://drive.google.com/file/d/1G-M108wcQdsYfPjJR9HeBHst-_VXMY-u/view" },
+      { id: "C020", ruleId: "R021", policyId: "P004", memberId: "M001", name: "新光意外傷害醫療保險附約（L1D01）", category: "意外傷害／醫療", amountText: "限額 30,000 元", wait: "無等待期", formula: "遭受意外傷害事故，實支實付每次最高限額 3 萬元。", warn: "每年 05/25 隨 P004 續保繳費。", page: "新光防癌三份.pdf p2, p18~20", status: "資料不足", pdfUrl: "https://drive.google.com/file/d/1G-M108wcQdsYfPjJR9HeBHst-_VXMY-u/view" },
+      { id: "C022", ruleId: "R023", policyId: "P004", memberId: "M001", name: "新光平安意外傷害 321 保險附約（32D01）", category: "意外傷害／醫療", amountText: "保額 1,000,000 元", wait: "無等待期", formula: "意外身故及失能保障保額 100 萬元。", warn: "職業等級第 1 類（國小教師）。", page: "新光防癌三份.pdf p2, p18~20", status: "資料不足", pdfUrl: "https://drive.google.com/file/d/1G-M108wcQdsYfPjJR9HeBHst-_VXMY-u/view" },
+
+      // 爸爸 M002 - 元大 P006 (DE)
+      { id: "C031", ruleId: "R032", policyId: "P006", memberId: "M002", name: "元大祝扶年年—殘廢保險金（1～11級失能一次金）", category: "失能／長照", amountText: "7.5萬 ～ 150萬元", wait: "無等待期", formula: "因疾病或傷害致成第 1～11 級殘廢程度之一，按 150 萬元 × 給付比例（1級100%～11級5%）一次給付。", warn: "同一保單年度內累計最高以 150 萬元為限。", page: "元大保單 p13~14, p19~27（第14條、附表一）", status: "已核對", pdfUrl: "https://drive.google.com/file/d/1KSYopnT0LBEnCAHcPzxQZ1tusY70BfrJ/view" },
+      { id: "C032", ruleId: "R033", policyId: "P006", memberId: "M002", name: "元大祝扶年年—復健保險金（1～6級一次金）", category: "失能／長照", amountText: "150,000 元／次", wait: "無等待期", formula: "因疾病或傷害致成第 1～6 級殘廢程度之一且診斷確定日仍生存者，按保額 10% 一次給付 15 萬元。", warn: "不同殘廢項目屬同一手或同一足時僅給付一項。", page: "元大保單 p15（第16條）", status: "已核對", pdfUrl: "https://drive.google.com/file/d/1KSYopnT0LBEnCAHcPzxQZ1tusY70BfrJ/view" },
+      { id: "C033", ruleId: "R034", policyId: "P006", memberId: "M002", name: "元大祝扶年年—殘廢生活扶助保險金（1～6級保證給付15年）", category: "失能／長照", amountText: "每年 18萬 ～ 36萬元", wait: "無等待期", formula: "致成第 1～6 級殘廢，每年按 36 萬元（保額24%）× 給付比例（1級100%=36萬～6級50%=18萬）給付。", warn: "🌟 保證給付 15 年（可依年利率 2.25% 貼現一次領取）；15 年後仍生存繼續領，最高累計 1,800 萬元！", page: "元大保單 p10, p14（第2, 15條）", status: "已核對", pdfUrl: "https://drive.google.com/file/d/1KSYopnT0LBEnCAHcPzxQZ1tusY70BfrJ/view" },
+      { id: "C034", ruleId: "R035", policyId: "P006", memberId: "M002", name: "元大祝扶年年—1～11級殘廢豁免保險費", category: "豁免保費", amountText: "豁免年繳 39,867 元", wait: "無等待期", formula: "繳費期間（至2036年）內因疾病或傷害致成第 1～11 級殘廢程度之一，自診斷確定翌日起豁免未到期保費。", warn: "連最輕微的第 11 級殘廢也觸發保費豁免！", page: "元大保單 p15（第17條）", status: "已核對", pdfUrl: "https://drive.google.com/file/d/1KSYopnT0LBEnCAHcPzxQZ1tusY70BfrJ/view" },
+      { id: "C035", ruleId: "R036", policyId: "P006", memberId: "M002", name: "元大祝扶年年—身故保險金或喪葬費用／祝壽保險金（111歲）", category: "身故／完全失能", amountText: "所繳保費總額 × 1.06", wait: "無等待期", formula: "身故或達 111 歲仍生存時，按『年繳保險費總額之 1.06 倍（20年滿期為 871,320 元）』與『保價金』取大者給付。", warn: "不扣除已領過之殘廢保險金！身故受益人：1.楊佩真 2.法定繼承人。", page: "元大保單 p13, p15（第13, 18條）", status: "已核對", pdfUrl: "https://drive.google.com/file/d/1KSYopnT0LBEnCAHcPzxQZ1tusY70BfrJ/view" },
+
+      // 大兒子 M003 - 幸福(國泰) P001
+      { id: "C001", ruleId: "R001/R002", policyId: "P001", memberId: "M003", name: "第一次罹患癌症保險金（低侵襲性／其他癌症）", category: "癌症一次金", amountText: "20萬（原位癌2萬）", wait: "90日", formula: "投保 2 單位：初次罹患『低侵襲性癌症（原位癌等7項）』給付 2 萬元；初次罹患『其他癌症』給付 20 萬元（各限 1 次）。", warn: "等待期 90 日；全契約累計最高給付上限 400 萬元。", page: "國泰防癌 p7, p9（ICG第2, 11條）", status: "已核對", pdfUrl: "https://drive.google.com/file/d/1w8AY5m6atLx_rR7uj_iqTczOm0qV2H4P/view" },
+      { id: "C002", ruleId: "R003", policyId: "P001", memberId: "M003", name: "癌症住院醫療保險金", category: "癌症療程", amountText: "3,000 元／日", wait: "90日", formula: "每單位 1,500 元 × 2 單位 ＝ 每日 3,000 元，按實際住院日數給付（含入住醫院附設之癌症安寧病房）。", warn: "原位癌（低侵襲性癌症）住院同樣適用理賠！", page: "國泰防癌 p9（ICG第12條）", status: "已核對", pdfUrl: "https://drive.google.com/file/d/1w8AY5m6atLx_rR7uj_iqTczOm0qV2H4P/view" },
+      { id: "C003", ruleId: "R004", policyId: "P001", memberId: "M003", name: "癌症出院療養保險金", category: "癌症療程", amountText: "1,000 元／日", wait: "90日", formula: "每單位 500 元 × 2 單位 ＝ 每日 1,000 元，依癌症住院醫療保險金之給付日數計算。", warn: "與 C002 癌症住院金同步計算，等於住院一天合領 4,000 元。", page: "國泰防癌 p9（ICG第13條）", status: "已核對", pdfUrl: "https://drive.google.com/file/d/1w8AY5m6atLx_rR7uj_iqTczOm0qV2H4P/view" },
+      { id: "C004", ruleId: "R005", policyId: "P001", memberId: "M003", name: "癌症門診醫療保險金（住院前後30日內）", category: "癌症療程", amountText: "1,200 元／日", wait: "90日", formula: "每單位 600 元 × 2 單位 ＝ 每日 1,200 元。", warn: "⚠️ 條款第14條嚴格規定：須經診斷必須住院治療，且限於『入院前30日及出院後30日內（不含當日）』之癌症門診！", page: "國泰防癌 p9（ICG第14條）", status: "已核對", pdfUrl: "https://drive.google.com/file/d/1w8AY5m6atLx_rR7uj_iqTczOm0qV2H4P/view" },
+      { id: "C005", ruleId: "R006", policyId: "P001", memberId: "M003", name: "癌症化學醫療保險金", category: "癌症療程", amountText: "2,000 元／次", wait: "90日", formula: "每單位 1,000 元 × 2 單位 ＝ 每次 2,000 元（門診或住院在醫院接受化療皆可）。", warn: "不受住院前後 30 日限制。", page: "國泰防癌 p9（ICG第15條）", status: "已核對", pdfUrl: "https://drive.google.com/file/d/1w8AY5m6atLx_rR7uj_iqTczOm0qV2H4P/view" },
+      { id: "C006", ruleId: "R007", policyId: "P001", memberId: "M003", name: "癌症放射線醫療保險金（含放射刀／海扶刀）", category: "癌症療程", amountText: "2,000 元／次", wait: "90日", formula: "每單位 1,000 元 × 2 單位 ＝ 每次 2,000 元（門診或住院放療皆可）。", warn: "⚠️ 雷射刀、光子刀、加瑪刀、諾力刀、電腦刀、X光刀、海扶刀等縮小腫瘤手術均歸入本項給付！", page: "國泰防癌 p9（ICG第16條）", status: "已核對", pdfUrl: "https://drive.google.com/file/d/1w8AY5m6atLx_rR7uj_iqTczOm0qV2H4P/view" },
+      { id: "C007", ruleId: "R008", policyId: "P001", memberId: "M003", name: "癌症住院手術醫療保險金", category: "癌症療程", amountText: "40,000 元／次", wait: "90日", formula: "每單位 20,000 元 × 2 單位 ＝ 每次 40,000 元（住院接受以癌症病灶全部切除為目的之手術）。", warn: "若為電腦刀／海扶刀等縮小腫瘤手術則改依第16條放療給付。", page: "國泰防癌 p9（ICG第17條）", status: "已核對", pdfUrl: "https://drive.google.com/file/d/1w8AY5m6atLx_rR7uj_iqTczOm0qV2H4P/view" },
+      { id: "C008", ruleId: "R009", policyId: "P001", memberId: "M003", name: "癌症門診手術醫療保險金", category: "癌症療程", amountText: "6,000 元／次", wait: "90日", formula: "每單位 3,000 元 × 2 單位 ＝ 每次 6,000 元（門診接受以癌症病灶全部切除為目的之手術）。", warn: "不含骨髓移植、義乳、義肢、義齒。", page: "國泰防癌 p9（ICG第18條）", status: "已核對", pdfUrl: "https://drive.google.com/file/d/1w8AY5m6atLx_rR7uj_iqTczOm0qV2H4P/view" },
+      { id: "C009", ruleId: "R010", policyId: "P001", memberId: "M003", name: "癌症骨髓移植手術保險金", category: "癌症療程", amountText: "200,000 元／次", wait: "90日", formula: "每單位 100,000 元 × 2 單位 ＝ 每次 200,000 元。", warn: "依條款第 19 條規定。", page: "國泰防癌 p9~10（ICG第19條）", status: "已核對", pdfUrl: "https://drive.google.com/file/d/1qyFgwNV2o93oZ0WeZOGBoRFNz0HGrlkb/view" },
+      { id: "C010", ruleId: "R011", policyId: "P001", memberId: "M003", name: "癌症義乳／義肢／義齒重建保險金", category: "癌症療程", amountText: "義乳6萬/義肢6萬/義齒4萬", wait: "90日", formula: "義乳每側 6 萬（限1次）；義肢每肢 6 萬（四肢各1次）；義齒裝設 4 萬（終身1次）。", warn: "須因癌症或併發症直接原因切除／截肢／拔牙並重建裝設。", page: "國泰防癌 p10（ICG第20~22條）", status: "已核對", pdfUrl: "https://drive.google.com/file/d/1qyFgwNV2o93oZ0WeZOGBoRFNz0HGrlkb/view" },
+      { id: "C011", ruleId: "R012", policyId: "P001", memberId: "M003", name: "癌症身故保險金", category: "身故／完全失能", amountText: "200,000 元", wait: "90日", formula: "每單位 10 萬元 × 2 單位 ＝ 20 萬元（以癌症或併發症為直接原因身故）。", warn: "給付後契約終止；身故受益人：楊佩真（媽媽）。", page: "國泰防癌 p10（ICG第23條）", status: "已核對", pdfUrl: "https://drive.google.com/file/d/1qyFgwNV2o93oZ0WeZOGBoRFNz0HGrlkb/view" },
+      { id: "C012", ruleId: "R013", policyId: "P001", memberId: "M003", name: "新防癌終身健康保險保費豁免", category: "豁免保費", amountText: "豁免年繳 4,992 元", wait: "90日", formula: "繳費期間（至2031年）內罹患第2條約定之『其他癌症』或致成附表一完全殘廢程度之一者，免繳未到期保費。", warn: "⚠️『低侵襲性癌症（如原位癌等7項）』不適用保費豁免！", page: "國泰防癌 p10~11（ICG第24條）", status: "已核對", pdfUrl: "https://drive.google.com/file/d/1qyFgwNV2o93oZ0WeZOGBoRFNz0HGrlkb/view" }
+    ];
+
+    let selectedMemberId = "M001";
+    let selectedCategory = "全部";
+
+    const CATEGORIES = ["全部", "住院日額", "住院醫療實支實付", "手術給付", "癌症一次金", "癌症療程", "失能／長照", "意外傷害／醫療", "身故／完全失能", "豁免保費"];
+
+    // ==================== 初始化與渲染 ====================
+    function init() {
+      renderMembers();
+      renderPillars();
+      renderCategories();
+      renderCoverages();
+      renderCalendarAndPolicies();
+      runCalculator();
+    }
+
+    function switchTab(tabId, btn) {
+      document.querySelectorAll(".tab-panel").forEach(el => el.classList.remove("active"));
+      document.querySelectorAll(".tab-btn").forEach(el => el.classList.remove("active"));
+      document.getElementById(tabId).classList.add("active");
+      btn.classList.add("active");
+    }
+
+    function selectMember(memberId) {
+      selectedMemberId = memberId;
+      renderMembers();
+      renderPillars();
+      renderCoverages();
+    }
+
+    function renderMembers() {
+      const container = document.getElementById("memberSelector");
+      container.innerHTML = MEMBERS.map(m => `
+        <div class="member-card ${m.id === selectedMemberId ? 'active' : ''}" onclick="selectMember('${m.id}')">
+          <div class="member-header">
+            <div class="member-avatar">${m.avatar}</div>
+            <div class="member-info">
+              <h3>${m.name}</h3>
+              <span>${m.id}｜${m.birth}</span>
+            </div>
+          </div>
+          <div class="member-stats">
+            <span>有效保單：<strong>${m.activePolicies} 張</strong></span>
+            <span>年繳保費：<strong>NT$ ${m.annualPremium.toLocaleString()}</strong></span>
+          </div>
+        </div>
+      `).join("");
+    }
+
+    function renderPillars() {
+      const m = MEMBERS.find(x => x.id === selectedMemberId);
+      const container = document.getElementById("memberPillars");
+      container.innerHTML = `
+        <div class="pillar-card medical">
+          <div class="pillar-title"><span>🏥 住院醫療＆實支實付</span><span class="badge badge-blue">${m.name.split(" ")[0]}</span></div>
+          <div class="pillar-main">${m.pillars.medical.main}</div>
+          <div class="pillar-desc">${m.pillars.medical.desc}</div>
+        </div>
+        <div class="pillar-card cancer">
+          <div class="pillar-title"><span>🎗️ 癌症一次金＆療程</span><span class="badge badge-red">防癌保障</span></div>
+          <div class="pillar-main">${m.pillars.cancer.main}</div>
+          <div class="pillar-desc">${m.pillars.cancer.desc}</div>
+        </div>
+        <div class="pillar-card disability">
+          <div class="pillar-title"><span>♿ 失能照護＆扶助金</span><span class="badge badge-purple">長照防護</span></div>
+          <div class="pillar-main">${m.pillars.disability.main}</div>
+          <div class="pillar-desc">${m.pillars.disability.desc}</div>
+        </div>
+        <div class="pillar-card accident">
+          <div class="pillar-title"><span>🚑 意外／身故／豁免</span><span class="badge badge-amber">基礎保障</span></div>
+          <div class="pillar-main">${m.pillars.accident.main}</div>
+          <div class="pillar-desc">${m.pillars.accident.desc}</div>
+        </div>
+      `;
+    }
+
+    function renderCategories() {
+      const container = document.getElementById("categoryPills");
+      container.innerHTML = CATEGORIES.map(cat => `
+        <button class="cat-pill ${cat === selectedCategory ? 'active' : ''}" onclick="setCategory('${cat}')">${cat}</button>
+      `).join("");
+    }
+
+    function setCategory(cat) {
+      selectedCategory = cat;
+      renderCategories();
+      renderCoverages();
+    }
+
+    function getCategoryBadgeClass(cat) {
+      if (cat.includes("實支") || cat.includes("住院") || cat.includes("手術")) return "badge-blue";
+      if (cat.includes("癌症")) return "badge-red";
+      if (cat.includes("失能")) return "badge-purple";
+      if (cat.includes("意外")) return "badge-amber";
+      return "badge-teal";
+    }
+
+    function renderCoverages() {
+      const keyword = (document.getElementById("covSearch").value || "").trim().toLowerCase();
+      const filtered = COVERAGES.filter(c => {
+        if (c.memberId !== selectedMemberId) return false;
+        if (selectedCategory !== "全部" && c.category !== selectedCategory) return false;
+        if (keyword) {
+          const text = `${c.id} ${c.name} ${c.category} ${c.amountText} ${c.formula} ${c.warn}`.toLowerCase();
+          return text.includes(keyword);
+        }
+        return true;
+      });
+
+      const container = document.getElementById("coverageContainer");
+      if (filtered.length === 0) {
+        container.innerHTML = `
+          <div style="grid-column: 1 / -1; background:#fff; padding:32px; border-radius:14px; text-align:center; color:var(--text-muted); border:1px dashed var(--border);">
+            <div style="font-size:2rem;margin-bottom:8px;">📂</div>
+            <strong>目前此篩選條件下尚無已建檔之保障項目</strong>
+            <p style="font-size:0.88rem;margin-top:4px;">請切換上方「全部分類」或將新保單 PDF 上傳至雲端硬碟 01_原始保單PDF 資料夾。</p>
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = filtered.map(c => {
+        const pol = POLICIES.find(p => p.id === c.policyId) || {};
+        return `
+          <div class="cov-card">
+            <div>
+              <div class="cov-top">
+                <span class="badge ${getCategoryBadgeClass(c.category)}">${c.category}</span>
+                <span class="badge ${c.status === '已核對' ? 'badge-green' : 'badge-amber'}">${c.id}｜${c.status}</span>
+              </div>
+              <div class="cov-title">${c.name}</div>
+              <div class="cov-policy">${pol.id}｜${pol.insurer}（等待期：${c.wait}）</div>
+              <div class="cov-amount-box">
+                <span class="cov-amount-label">條款約定給付額／限額</span>
+                <span class="cov-amount-val">${c.amountText}</span>
+              </div>
+              <div class="cov-details">
+                <p><strong>📐 給付公式：</strong>${c.formula}</p>
+                <div class="cov-warn">${c.warn}</div>
+              </div>
+            </div>
+            <div class="cov-footer">
+              <span>📍 ${c.page}</span>
+              <a class="pdf-link" href="${c.pdfUrl}" target="_blank" rel="noopener">📄 檢視保單 PDF ↗</a>
+            </div>
+          </div>
+        `;
+      }).join("");
+    }
+
+    // ==================== 互動式理賠試算器邏輯 ====================
+    function applyPreset(presetKey) {
+      if (presetKey === "zhen_surgery") {
+        document.getElementById("calcMember").value = "M001";
+        document.getElementById("calcScenario").value = "general_medical";
+        document.getElementById("calcHospDays").value = 5;
+        document.getElementById("calcInSurg").value = 1;
+        document.getElementById("calcOutSurg").value = 0;
+        document.getElementById("calcIs227").value = "yes";
+        document.getElementById("calcMiscExp").value = 50000;
+        document.getElementById("calcSurgExp").value = 30000;
+        document.getElementById("calcDisLevel").value = "0";
+      } else if (presetKey === "zhen_cancer") {
+        document.getElementById("calcMember").value = "M001";
+        document.getElementById("calcScenario").value = "cancer_general";
+        document.getElementById("calcFirstCancer").value = "yes";
+        document.getElementById("calcHospDays").value = 5;
+        document.getElementById("calcInSurg").value = 1;
+        document.getElementById("calcOutSurg").value = 0;
+        document.getElementById("calcIs227").value = "yes";
+        document.getElementById("calcMiscExp").value = 60000;
+        document.getElementById("calcSurgExp").value = 40000;
+        document.getElementById("calcChemo").value = 0;
+        document.getElementById("calcRadio").value = 3;
+        document.getElementById("calcClinicDays").value = 3;
+        document.getElementById("calcDisLevel").value = "0";
+      } else if (presetKey === "yang_cis") {
+        document.getElementById("calcMember").value = "M003";
+        document.getElementById("calcScenario").value = "cancer_cis";
+        document.getElementById("calcFirstCancer").value = "yes";
+        document.getElementById("calcHospDays").value = 5;
+        document.getElementById("calcInSurg").value = 1;
+        document.getElementById("calcOutSurg").value = 0;
+        document.getElementById("calcChemo").value = 0;
+        document.getElementById("calcRadio").value = 3;
+        document.getElementById("calcClinicDays").value = 3;
+        document.getElementById("calcMiscExp").value = 0;
+        document.getElementById("calcSurgExp").value = 0;
+        document.getElementById("calcDisLevel").value = "0";
+      } else if (presetKey === "yang_cancer") {
+        document.getElementById("calcMember").value = "M003";
+        document.getElementById("calcScenario").value = "cancer_general";
+        document.getElementById("calcFirstCancer").value = "yes";
+        document.getElementById("calcHospDays").value = 10;
+        document.getElementById("calcInSurg").value = 1;
+        document.getElementById("calcOutSurg").value = 0;
+        document.getElementById("calcChemo").value = 3;
+        document.getElementById("calcRadio").value = 3;
+        document.getElementById("calcClinicDays").value = 4;
+        document.getElementById("calcMiscExp").value = 0;
+        document.getElementById("calcSurgExp").value = 0;
+        document.getElementById("calcDisLevel").value = "0";
+      } else if (presetKey === "hong_disability") {
+        document.getElementById("calcMember").value = "M002";
+        document.getElementById("calcScenario").value = "disability";
+        document.getElementById("calcHospDays").value = 0;
+        document.getElementById("calcInSurg").value = 0;
+        document.getElementById("calcOutSurg").value = 0;
+        document.getElementById("calcMiscExp").value = 0;
+        document.getElementById("calcSurgExp").value = 0;
+        document.getElementById("calcDisLevel").value = "3";
+      }
+      runCalculator();
+    }
+
+    function runCalculator() {
+      const memberId = document.getElementById("calcMember").value;
+      const scenario = document.getElementById("calcScenario").value;
+      const hospDays = Math.max(0, parseInt(document.getElementById("calcHospDays").value || 0, 10));
+      const inSurg = Math.max(0, parseInt(document.getElementById("calcInSurg").value || 0, 10));
+      const outSurg = Math.max(0, parseInt(document.getElementById("calcOutSurg").value || 0, 10));
+      const is227 = document.getElementById("calcIs227").value === "yes";
+      const miscExp = Math.max(0, parseInt(document.getElementById("calcMiscExp").value || 0, 10));
+      const surgExp = Math.max(0, parseInt(document.getElementById("calcSurgExp").value || 0, 10));
+
+      const firstCancer = document.getElementById("calcFirstCancer").value === "yes";
+      const clinicDays = Math.max(0, parseInt(document.getElementById("calcClinicDays").value || 0, 10));
+      const chemo = Math.max(0, parseInt(document.getElementById("calcChemo").value || 0, 10));
+      const radio = Math.max(0, parseInt(document.getElementById("calcRadio").value || 0, 10));
+      const boneMarrow = Math.max(0, parseInt(document.getElementById("calcBoneMarrow").value || 0, 10));
+      const reconstruct = Math.max(0, parseInt(document.getElementById("calcReconstruct").value || 0, 10));
+      const disLevel = parseInt(document.getElementById("calcDisLevel").value || 0, 10);
+
+      const isCancer = scenario === "cancer_cis" || scenario === "cancer_general";
+      document.getElementById("cancerInputs").style.display = isCancer ? "block" : "none";
+
+      const rows = [];
+      let fixedTotal = 0;
+      let reimbTotal = 0;
+      let annuityGuaranteed15Yr = 0;
+      const docs = new Set(["保險金申請書", "受益人身分證明與存摺封面影本"]);
+
+      // 1. 媽媽 M001 試算邏輯
+      if (memberId === "M001") {
+        // (A) 遠雄 RJ1 (P007) — 無論一般疾病、意外或癌症住院／手術皆可啟動！
+        if (hospDays > 0) {
+          const rj1Daily = 1000 * hospDays;
+          const rj1Assist = 500 * hospDays;
+          const rj1Console = 7000;
+          const rj1FixedSub = rj1Daily + rj1Assist + rj1Console;
+          fixedTotal += rj1FixedSub;
+          docs.add("醫療診斷證明書（載明住院起迄日數）");
+          rows.push({
+            code: "P007 / C037~C039",
+            name: "遠雄康富醫療(RJ1計劃二)—住院日額＋輔助金＋住院慰問金",
+            desc: `✅ 定額必領：住院日額(1,000×${hospDays}日) ＋ 輔助金(500×${hospDays}日) ＋ 每次住院慰問金(7,000元)`,
+            amount: rj1FixedSub
+          });
+
+          if (miscExp > 0) {
+            const rj1Misc = Math.min(miscExp, 300000);
+            reimbTotal += rj1Misc;
+            docs.add("醫療費用收據與明細表（遠雄 RJ1 可接受副本收據）");
+            rows.push({
+              code: "P007 / C040 (R041)",
+              name: "遠雄康富醫療(RJ1計劃二)—住院醫療費用保險金（雜費實支實付）",
+              desc: `✅ 副本實支實付：實際自費雜費 ${miscExp.toLocaleString()} 元（每次住院上限 300,000 元，不含超等病房差額）`,
+              amount: rj1Misc
+            });
+          }
+        }
+
+        if ((inSurg + outSurg) > 0 && surgExp > 0) {
+          if (is227) {
+            const rj1Surg = Math.min(surgExp, 200000 * (inSurg + outSurg));
+            reimbTotal += rj1Surg;
+            docs.add("醫療診斷證明書（載明符合健保 2-2-7 之手術名稱）與醫療費用副本收據");
+            rows.push({
+              code: "P007 / C041 (R042)",
+              name: "遠雄康富醫療(RJ1計劃二)—手術費用保險金（實支實付）",
+              desc: `✅ 符合健保 2-2-7 手術：自費手術費 ${surgExp.toLocaleString()} 元（每次最高限額 200,000 元，不乘手術表比例！）`,
+              amount: rj1Surg
+            });
+          } else {
+            rows.push({
+              code: "P007 / C041 (R042)",
+              name: "遠雄康富醫療(RJ1計劃二)—手術費用保險金",
+              desc: `⚠️ 不符合 RJ1 第2條第7款（非健保 2-2-7 手術篇，屬 2-2-6 處置類）：手術費不予給付（但若為住院期間之自費醫材，可併入上方 C040 住院雜費 30 萬限額內申請！）`,
+              amount: 0
+            });
+          }
+        }
+
+        // (B) 新光附約提醒 (P004: HS-5 / 綜合保障50萬 / 意外醫療3萬)
+        if (hospDays > 0 || inSurg > 0 || outSurg > 0 || scenario === "accident_medical") {
+          docs.add("醫療費用收據正本（供新光人壽安心住院 HS-5／意外醫療申請雙實支）");
+          rows.push({
+            code: "P004 / C020~C023",
+            name: "新光安心住院(HS-5)＋個人綜合保障(50萬)＋意外醫療(3萬)",
+            desc: `ℹ️ 雙實支加領提醒：媽媽另有新光 HS-5 實支實付與個人綜合保障 50 萬（因缺附約條款頁暫不計入上方總額，實際送件可用收據正本向新光再領一份！）`,
+            amount: 0
+          });
+        }
+
+        // (C) 媽媽 新光防癌健康終身 (P004)
+        if (isCancer) {
+          docs.add("癌症診斷證明書及固定組織病理檢查報告（初診必備）");
+          if (firstCancer) {
+            fixedTotal += 120000;
+            rows.push({
+              code: "P004 / C013 (R014)",
+              name: "新光防癌健康終身—初次罹患癌症保險金（100萬×12%）",
+              desc: `✅ 初次確診罹癌（條款附表含惡性腫瘤及 ICD 230-234 原位癌均給付 12%）：一次給付 120,000 元`,
+              amount: 120000
+            });
+          }
+          if (hospDays > 0) {
+            const skHosp = 4000 * hospDays;
+            const skCareDays = Math.min(hospDays, 20);
+            const skCare = 2400 * skCareDays;
+            fixedTotal += (skHosp + skCare);
+            rows.push({
+              code: "P004 / C014+C016",
+              name: "新光防癌健康終身—癌症住院(4,000/日)＋出院療養(2,400/日)",
+              desc: `✅ 癌症住院 ${hospDays} 日 × 4,000 ＝ ${skHosp.toLocaleString()} 元；出院療養 ${skCareDays} 日(每次上限20日) × 2,400 ＝ ${skCare.toLocaleString()} 元`,
+              amount: skHosp + skCare
+            });
+          }
+          if ((inSurg + outSurg + boneMarrow) > 0) {
+            const totalCancerSurg = inSurg + outSurg + boneMarrow;
+            const skSurg = 120000 * totalCancerSurg;
+            fixedTotal += skSurg;
+            rows.push({
+              code: "P004 / C015 (R016)",
+              name: "新光防癌健康終身—癌症手術醫療保險金（含骨髓移植受贈）",
+              desc: `✅ 外科手術 ${totalCancerSurg} 次 × 120,000 元（保額12%）`,
+              amount: skSurg
+            });
+          }
+          const totalClinicVisits = Math.min(90, chemo + radio + clinicDays);
+          if (totalClinicVisits > 0) {
+            const skClinic = 2400 * totalClinicVisits;
+            fixedTotal += skClinic;
+            rows.push({
+              code: "P004 / C017 (R018)",
+              name: "新光防癌健康終身—癌症門診醫療保險金（含化療／放療／門診）",
+              desc: `✅ 化療(${chemo})＋放療(${radio})＋門診(${clinicDays}) 共 ${totalClinicVisits} 次 × 2,400 元（每年上限90次，不須住院即可申請）`,
+              amount: skClinic
+            });
+          }
+        }
+      }
+
+      // 2. 大兒子 M003 試算邏輯 (P001 幸福/國泰承受 新防癌 2單位)
+      if (memberId === "M003") {
+        if (isCancer) {
+          docs.add("病理組織檢查報告及癌症診斷證明書");
+          if (firstCancer) {
+            const firstAmt = scenario === "cancer_cis" ? 20000 : 200000;
+            fixedTotal += firstAmt;
+            rows.push({
+              code: "P001 / C001",
+              name: `幸福(國泰)新防癌(2單位)—第一次罹患癌症保險金（${scenario === "cancer_cis" ? "低侵襲性癌症" : "其他癌症"}）`,
+              desc: `✅ 投保 2 單位：${scenario === "cancer_cis" ? "原位癌等7項低侵襲性癌症 1萬×2＝20,000 元" : "其他惡性腫瘤 10萬×2＝200,000 元"}（終身限1次）`,
+              amount: firstAmt
+            });
+          }
+          if (hospDays > 0) {
+            const cHosp = 3000 * hospDays;
+            const cCare = 1000 * hospDays;
+            fixedTotal += (cHosp + cCare);
+            docs.add("醫院出具之癌症住院醫療證明書");
+            rows.push({
+              code: "P001 / C002+C003",
+              name: "幸福(國泰)新防癌(2單位)—癌症住院(3,000/日)＋出院療養(1,000/日)",
+              desc: `✅ 住院 ${hospDays} 日 × (3,000 + 1,000) ＝ ${(cHosp + cCare).toLocaleString()} 元`,
+              amount: cHosp + cCare
+            });
+          }
+          if (inSurg > 0) {
+            const cInSurg = 40000 * inSurg;
+            fixedTotal += cInSurg;
+            docs.add("醫院出具之癌症住院手術證明書（載明癌症病灶切除手術）");
+            rows.push({
+              code: "P001 / C007 (R008)",
+              name: "幸福(國泰)新防癌(2單位)—癌症住院手術醫療保險金",
+              desc: `✅ 住院切除手術 ${inSurg} 次 × 40,000 元（若為電腦刀/加瑪刀/海扶刀則歸入放療）`,
+              amount: cInSurg
+            });
+          }
+          if (outSurg > 0) {
+            const cOutSurg = 6000 * outSurg;
+            fixedTotal += cOutSurg;
+            rows.push({
+              code: "P001 / C008 (R009)",
+              name: "幸福(國泰)新防癌(2單位)—癌症門診手術醫療保險金",
+              desc: `✅ 門診切除手術 ${outSurg} 次 × 6,000 元`,
+              amount: cOutSurg
+            });
+          }
+          if ((chemo + radio) > 0) {
+            const crAmt = 2000 * (chemo + radio);
+            fixedTotal += crAmt;
+            docs.add("醫院出具之化學治療／放射線治療證明書（載明治療日期與次數）");
+            rows.push({
+              code: "P001 / C005+C006",
+              name: "幸福(國泰)新防癌(2單位)—癌症化療(2,000/次)＋放療(2,000/次)",
+              desc: `✅ 化療 ${chemo} 次 ＋ 放療/放射刀 ${radio} 次 ＝ 共 ${chemo + radio} 次 × 2,000 元（無住院前後30日限制）`,
+              amount: crAmt
+            });
+          }
+          if (clinicDays > 0) {
+            if (hospDays > 0) {
+              const clAmt = 1200 * clinicDays;
+              fixedTotal += clAmt;
+              rows.push({
+                code: "P001 / C004 (R005)",
+                name: "幸福(國泰)新防癌(2單位)—癌症門診醫療保險金（住院前後30日內）",
+                desc: `✅ 入院前30日及出院後30日內（不含當日）之癌症門診 ${clinicDays} 日 × 1,200 元`,
+                amount: clAmt
+              });
+            } else {
+              rows.push({
+                code: "P001 / C004 (R005)",
+                name: "幸福(國泰)新防癌(2單位)—癌症門診醫療保險金",
+                desc: `⚠️ 條款第14條規定：須有住院事實且限於入院前30日及出院後30日內之門診，未住院者不給付本項`,
+                amount: 0
+              });
+            }
+          }
+          if ((boneMarrow + reconstruct) > 0) {
+            const bmAmt = boneMarrow * 200000 + reconstruct * 60000;
+            fixedTotal += bmAmt;
+            rows.push({
+              code: "P001 / C009+C010",
+              name: "幸福(國泰)新防癌(2單位)—骨髓移植(20萬)／義乳義肢重建(6萬)",
+              desc: `✅ 骨髓移植 ${boneMarrow} 次 × 20萬 ＋ 重建 ${reconstruct} 次 × 6萬`,
+              amount: bmAmt
+            });
+          }
+          // 豁免判斷
+          rows.push({
+            code: "P001 / C012 (R013)",
+            name: "幸福(國泰)新防癌—未到期保險費豁免權益（第24條）",
+            desc: scenario === "cancer_general"
+              ? "🌟 確診『其他癌症』：自診斷確定日起豁免未到期主約保費（每年免繳 4,992 元至 2031 年）！"
+              : "❌ 條款第24條規定：『低侵襲性癌症（原位癌等7項）』不適用保費豁免，仍須繼續繳費。",
+            amount: 0
+          });
+        } else {
+          rows.push({
+            code: "P001",
+            name: "大兒子（王叡陽 M003）目前僅建檔防癌險 P001",
+            desc: "ℹ️ 一般疾病或意外情境不啟動防癌險；請將左方診斷類型切換為『原位癌』或『一般癌症』試算，或補上傳一般醫療險 PDF。",
+            amount: 0
+          });
+        }
+      }
+
+      // 3. 元大祝扶年年殘廢照護終身保險 (DE 150萬) — 媽媽 M001 (P005) & 爸爸 M002 (P006)
+      if ((memberId === "M001" || memberId === "M002") && (disLevel > 0 || scenario === "disability")) {
+        const polCode = memberId === "M001" ? "P005" : "P006";
+        const prem = memberId === "M001" ? "26,019" : "39,867";
+        const levelToPct = { 1: 1.0, 2: 0.9, 3: 0.8, 4: 0.7, 5: 0.6, 6: 0.5, 7: 0.4, 8: 0.3, 9: 0.2, 10: 0.1, 11: 0.05 };
+        if (disLevel >= 1 && disLevel <= 11) {
+          const pct = levelToPct[disLevel];
+          const lumpSum = Math.round(1500000 * pct);
+          fixedTotal += lumpSum;
+          docs.add("殘廢（失能）診斷書");
+          rows.push({
+            code: `${polCode} / ${memberId === "M001" ? "C026" : "C031"}`,
+            name: `元大祝扶年年(DE)—第 ${disLevel} 級殘廢保險金（一次金）`,
+            desc: `✅ 保額 1,500,000 元 × 第 ${disLevel} 級比例 (${pct * 100}%) ＝ 一次給付 ${lumpSum.toLocaleString()} 元`,
+            amount: lumpSum
+          });
+
+          if (disLevel <= 6) {
+            const rehab = 150000;
+            const annualCare = Math.round(360000 * pct);
+            fixedTotal += rehab;
+            annuityGuaranteed15Yr = annualCare * 15;
+            rows.push({
+              code: `${polCode} / ${memberId === "M001" ? "C027" : "C032"}`,
+              name: `元大祝扶年年(DE)—第 1～6 級復健保險金（一次金）`,
+              desc: `✅ 保額 1,500,000 元 × 10% ＝ 一次給付 150,000 元`,
+              amount: rehab
+            });
+            rows.push({
+              code: `${polCode} / ${memberId === "M001" ? "C028" : "C033"}`,
+              name: `元大祝扶年年(DE)—殘廢生活扶助保險金（每年領 ${annualCare.toLocaleString()} 元，保證給付 15 年）`,
+              desc: `🌟 每年給付 (150萬×24%=36萬) × ${pct * 100}% ＝ 每年 ${annualCare.toLocaleString()} 元！保證給付 15 年共 ${annuityGuaranteed15Yr.toLocaleString()} 元（可申請 2.25% 貼現一次領，活越久領越多，最高累計 1,800 萬元）`,
+              amount: annualCare
+            });
+          }
+
+          rows.push({
+            code: `${polCode} / ${memberId === "M001" ? "C029" : "C034"}`,
+            name: `元大祝扶年年(DE)—第 1～11 級殘廢豁免保險費（第17條）`,
+            desc: `🌟 觸發保費豁免：自診斷確定第 ${disLevel} 級殘廢之翌日起，免繳後續未到期年繳保費（每年省下 ${prem} 元至 2036 年）！`,
+            amount: 0
+          });
+        } else {
+          rows.push({
+            code: polCode,
+            name: "元大祝扶年年殘廢照護終身保險（DE 150萬）",
+            desc: "請在左方紫色區塊選擇『診斷確定失能等級（第 1 級 ～ 第 11 級）』即可即時試算失能一次金、復健金與保證 15 年生活扶助金！",
+            amount: 0
+          });
+        }
+      } else if (memberId === "M002" && disLevel === 0) {
+        rows.push({
+          code: "P006",
+          name: "爸爸（王鋕鋐 M002）目前僅建檔元大失能照護終身險 P006",
+          desc: "ℹ️ 請在左方將事故類型切換為『♿ 疾病或意外致成失能』並選擇失能等級（1~11級）即可試算！若有爸爸的其他醫療險 PDF，請放入雲端『鋐』資料夾。",
+          amount: 0
+        });
+      }
+
+      if (memberId === "M004") {
+        rows.push({
+          code: "待建檔",
+          name: "小兒子（王燡勛 M004）目前尚無已建檔保單",
+          desc: "請將保單 PDF 放入 Google Drive『01_原始保單PDF/勛』資料夾後執行保單整理。",
+          amount: 0
+        });
+      }
+
+      const immediateTotal = fixedTotal + reimbTotal;
+      const grandTotalWith15Yr = immediateTotal + annuityGuaranteed15Yr;
+
+      // Render Banner
+      document.getElementById("calcResultBanner").innerHTML = `
+        <div>
+          <div class="result-total-label">💰 當次立即可領估算總計（定額 ＋ 實支實付）</div>
+          <div class="result-total-val">NT$ ${immediateTotal.toLocaleString()} 元</div>
+          ${annuityGuaranteed15Yr > 0 ? `<div style="font-size:0.9rem;margin-top:4px;color:#fde047;font-weight:700;">➕ 另享 15 年保證給付扶助金總額：NT$ ${annuityGuaranteed15Yr.toLocaleString()} 元（合計總價值 NT$ ${grandTotalWith15Yr.toLocaleString()} 元）</div>` : ""}
+        </div>
+        <div class="result-breakdown">
+          <div class="result-sub-box">
+            <span>定額／一次金小計</span>
+            <strong>NT$ ${fixedTotal.toLocaleString()}</strong>
+          </div>
+          <div class="result-sub-box">
+            <span>實支實付預估小計</span>
+            <strong>NT$ ${reimbTotal.toLocaleString()}</strong>
+          </div>
+        </div>
+      `;
+
+      // Render Table Rows
+      document.getElementById("calcResultBody").innerHTML = rows.map(r => `
+        <tr>
+          <td><span class="badge badge-blue">${r.code}</span></td>
+          <td><strong>${r.name}</strong></td>
+          <td>${r.desc}</td>
+          <td class="amount-cell">${r.amount > 0 ? "NT$ " + r.amount.toLocaleString() : "-"}</td>
+        </tr>
+      `).join("");
+
+      // Render Document Checklist
+      document.getElementById("calcDocChecklist").innerHTML = `
+        <h4>📑 本次情境申請理賠應備文件清單（依條款自動彙整）：</h4>
+        <ul>
+          ${Array.from(docs).map(d => `<li>${d}</li>`).join("")}
+        </ul>
+      `;
+    }
+
+    // ==================== 年度繳費日曆與保單總表 ====================
+    function renderCalendarAndPolicies() {
+      const calGrid = document.getElementById("calendarGrid");
+      calGrid.innerHTML = `
+        <div class="cal-card" style="border-top-color:#0284c7;">
+          <div class="cal-month"><span>📅 5 月份應繳保單</span><span>NT$ 6,431</span></div>
+          <p style="font-size:0.9rem;"><strong>05 月 25 日｜P004 新光人壽（媽媽）</strong></p>
+          <p style="font-size:0.83rem;color:var(--text-muted);margin-top:4px;">主約「新光防癌健康終身 100 萬」已於 2016 年滿期免繳；目前僅繳 4 項附約（HS-5、綜合50萬、平安321、意外醫療）自然費率續保保費。</p>
+        </div>
+        <div class="cal-card" style="border-top-color:#7c3aed;">
+          <div class="cal-month"><span>📅 11 月份應繳保單</span><span>NT$ 65,886</span></div>
+          <p style="font-size:0.9rem;"><strong>11 月 22 日｜P005 元大人壽（媽媽）：26,019 元</strong></p>
+          <p style="font-size:0.9rem;"><strong>11 月 22 日｜P006 元大人壽（爸爸）：39,867 元</strong></p>
+          <p style="font-size:0.83rem;color:var(--text-muted);margin-top:4px;">夫妻雙人「祝扶年年殘廢照護終身保險 150 萬」（20年期，繳費至 2036 年）。</p>
+        </div>
+        <div class="cal-card" style="border-top-color:#0d9488;">
+          <div class="cal-month"><span>📅 12 月份應繳保單</span><span>NT$ 14,960</span></div>
+          <p style="font-size:0.9rem;"><strong>12 月 15 日｜P007 遠雄人壽（媽媽）：約 9,968 元</strong></p>
+          <p style="font-size:0.9rem;"><strong>12 月 19 日｜P001 幸福/國泰（大兒子）：4,992 元</strong></p>
+          <p style="font-size:0.83rem;color:var(--text-muted);margin-top:4px;">遠雄含主約 2,990 元＋附約 RJ1 自然費率（45~49歲為 6,978 元）；大兒子防癌險繳至 2031 年。</p>
+        </div>
+      `;
+
+      const tbody = document.getElementById("policyTableBody");
+      tbody.innerHTML = POLICIES.map(p => `
+        <tr>
+          <td><strong>${p.id}</strong></td>
+          <td>${p.memberName}</td>
+          <td>${p.insurer}</td>
+          <td>
+            <strong>${p.name}</strong>
+            <div style="font-size:0.78rem;color:var(--text-muted);">保單號碼遮蔽：${p.maskedNo}</div>
+          </td>
+          <td>
+            <div>${p.effective}</div>
+            <div style="font-size:0.78rem;color:var(--text-muted);">${p.term}</div>
+            ${p.status === '有效' ? `
+              <div class="progress-bar"><div class="progress-fill" style="width:${p.progress}%"></div></div>
+              <div style="font-size:0.75rem;color:var(--accent);">${p.progressText}</div>
+            ` : ''}
+          </td>
+          <td>${p.dueDay}</td>
+          <td class="amount-cell">${p.premium > 0 ? "NT$ " + p.premium.toLocaleString() : "-"}</td>
+          <td><span class="badge ${p.status === '有效' ? 'badge-green' : 'badge-red'}">${p.status}</span></td>
+          <td><a class="pdf-link" href="${p.pdfUrl}" target="_blank" rel="noopener">📄 開啟 PDF ↗</a></td>
+        </tr>
+      `).join("");
+    }
+
+    window.addEventListener("DOMContentLoaded", init);
+  </script>
+</body>
+</html>
